@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Produto } from "../entities/produto.entity";
-import { DataSource, DeleteResult, ILike, Repository } from "typeorm";
+import { DataSource, DeleteResult, ILike, LessThan, MoreThan, Repository } from "typeorm";
+import { Categoria } from "../../categoria/entities/categoria.entities";
 
 @Injectable()
 export class ProdutoService {
@@ -71,13 +72,19 @@ export class ProdutoService {
     }
 
     async findByMaiorQue(valor: number): Promise<Produto[]>{
-       return this.produtoRepository.createQueryBuilder('produto')
-            .where('produto.preco > :valor', { valor })
-            .getMany();
+       return this.produtoRepository.findBy({
+        
+            preco: MoreThan(valor)
+
+
+       
+       })
+    
     }
     async findByMenorQue(valor: number): Promise<Produto[]>{
-        return this.produtoRepository.createQueryBuilder('produto')
-             .where('produto.preco < :valor', { valor })
-             .getMany();
+        return this.produtoRepository.findBy({
+            preco: LessThan(valor)
+        })
+             
      }
 }
